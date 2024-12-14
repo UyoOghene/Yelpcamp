@@ -7,8 +7,7 @@ const Campground = require('./models/campground');
 const catchAsync = require('./utilities/catchAsync');
 const expressError = require('./utilities/expressError');
 const Joi = require('joi');
-const campgroundSchema = require('./schemas')
-
+const { campgroundSchema } = require('./schemas');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
