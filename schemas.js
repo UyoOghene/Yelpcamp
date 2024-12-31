@@ -11,3 +11,10 @@ const campgroundSchema = Joi.object({
 });
 
 module.exports = { campgroundSchema };
+
+module.exports.reviewSchema = Joi.object({
+    review: Joi.object({
+        rating: Joi.number().required(),
+        body: Joi.string().required()
+    }).required()
+});
