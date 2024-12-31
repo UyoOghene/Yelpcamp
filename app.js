@@ -31,7 +31,8 @@ app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
 
 app.get('/', (req, res) => {
-    res.send('Hello from YelpCamp');
+    // res.send('Hello from YelpCamp');
+    res.render('campgrounds/home.ejs')
 });
 
 // Error Handling
