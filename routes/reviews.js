@@ -1,22 +1,26 @@
 const express = require('express');
-const router = express.Router({mergeParams: true});
-const Campground = require('../models/campground');
-const Review =  require('../models/review')
-const catchAsync = require('../utilities/catchAsync');
-const expressError = require('../utilities/expressError');
-const methodOverride = require('method-override'); 
-const { reviewSchema } = require('../schemas');
+const router = express.Router({ mergeParams: true });
 
-const validateReview = (req,res,next)=>{
-    const { error} = reviewSchema.validate(req.body);
+const Campground = require('../models/campground.js');
+const Review = require('../models/review.js');
+
+const { reviewSchema } = require('../schemas.js');
+
+
+const ExpressError = require('../utilities/expressError.js');
+const catchAsync = require('../utilities/catchAsync');
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
-        const msg = error.details.map(el => el.message).join(', ');
-        throw new expressError(msg, 400);
-    }else{
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
         next();
     }
-    
 }
+
+
 
 router.post('/', validateReview, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
@@ -24,16 +28,15 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
     campground.reviews.push(review);
     await review.save();
     await campground.save();
-    console.log('Saved Review:', review); // Debugging log
+    req.flash('success', 'Created new review!');
     res.redirect(`/campgrounds/${campground._id}`);
-}));
+}))
 
 router.delete('/:reviewId', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
-
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success', 'Successfully deleted review')
     res.redirect(`/campgrounds/${id}`);
 }))
 
