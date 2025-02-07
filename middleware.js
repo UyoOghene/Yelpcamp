@@ -2,6 +2,7 @@ const ExpressError = require('./utilities/expressError.js');
 const { campgroundSchema } = require('./schemas.js');
 const Campground = require('./models/campground.js');
 const { reviewSchema } = require('./schemas.js');
+const Review = require('./models/review.js')
 
 
 module.exports.isLoggedIn = (req,res,next)=>{
@@ -43,6 +44,17 @@ module.exports.validateReview = (req, res, next) => {
     } else {
         next();
     }
+}
+
+module.exports.isReviewAuthor = async(req, res, next) => {
+    const {id, reviewId } = req.params;
+    const review = await Review.findById(id);
+    if (!campground.author.equals(req.user._id)){
+        req.flash('error', 'Not authorised!');
+        return res.redirect(`/campgrounds/${id}`)
+    }
+    next();
+
 }
 
 
