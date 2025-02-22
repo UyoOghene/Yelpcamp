@@ -1,3 +1,10 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
+console.log('Cloudinary Cloud Name:', process.env.CLOUDINARY_CLOUD_NAME);
+console.log('Secret:', process.env.SECRET);
+
 const express = require('express');
 const path = require('path');
 const methodOverride = require('method-override');
@@ -63,6 +70,7 @@ app.use((req,res,next)=>{
     res.locals.error = req.flash('error');
     next();
 })
+
 // Routes
 
 app.use('/', userRoutes)
