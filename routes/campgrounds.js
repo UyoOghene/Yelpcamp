@@ -18,8 +18,8 @@ router.route('/')
     // .post( isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
     router.route('/')
     .get(catchAsync(campgrounds.index))
-    // .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
-    router.post('/', upload.array('image'), campgrounds.createCampground);
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
+    // .post('/', upload.array('image'), campgrounds.createCampground);
     
 router.get('/new', isLoggedIn, campgrounds.renderNewForm);
 

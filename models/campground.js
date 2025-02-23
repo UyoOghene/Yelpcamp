@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const campgroundSchema = new mongoose.Schema({
     title: String,
     location: String,
-    image: String,
+    images: {
+       url: String,
+       filename: String 
+    },
     price: Number,
     author:{
         type: mongoose.Schema.ObjectId,
