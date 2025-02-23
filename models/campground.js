@@ -1,17 +1,27 @@
 const mongoose = require('mongoose');
-const campgroundSchema = new mongoose.Schema({
+const Schema = mongoose.Schema;
+
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+});
+
+const CampgroundSchema = new Schema({
     title: String,
-    location: String,
-    images: {
-       url: String,
-       filename: String 
-    },
     price: Number,
-    author:{
-        type: mongoose.Schema.ObjectId,
+    description: String,
+    location: String,
+    author: {
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    description: String,
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
+    images: [ImageSchema], // Ensure images is an array
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Review'
+        }
+    ]
 });
-module.exports = mongoose.model('Campground', campgroundSchema);
+
+module.exports = mongoose.model('Campground', CampgroundSchema);

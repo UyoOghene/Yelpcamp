@@ -40,16 +40,18 @@ module.exports.showCampground = async (req, res) => {
     const campground = await Campground.findById(req.params.id)
         .populate({
             path: 'reviews',
-            populate: { path: 'author' } // Ensure author data is populated
+            populate: { path: 'author' }
         })
-        .populate('author'); // Populate campground author
+        .populate('author'); 
+
     if (!campground) {
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campgrounds');
     }
-    res.render('campgrounds/show', { campground });
 
-}
+    console.log('Campground:', campground); // Check if images array exists
+    res.render('campgrounds/show', { campground });
+};
 
 module.exports.renderEditForm = async (req, res) => {
     const { id } = req.params;
