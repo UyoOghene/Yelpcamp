@@ -6,8 +6,13 @@ const ImageSchema = new Schema({
     filename: String
 });
 
+ImageSchema.virtual('thumbnail').get(function () {
+    return this.url.replace('/upload', '/upload/w_100');
+});
+
 const CampgroundSchema = new Schema({
     title: String,
+    images: [ImageSchema],
     price: Number,
     description: String,
     location: String,
@@ -15,7 +20,6 @@ const CampgroundSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    images: [ImageSchema], // Ensure images is an array
     reviews: [
         {
             type: Schema.Types.ObjectId,
@@ -23,5 +27,4 @@ const CampgroundSchema = new Schema({
         }
     ]
 });
-
 module.exports = mongoose.model('Campground', CampgroundSchema);
