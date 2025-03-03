@@ -1,5 +1,7 @@
 const Campground = require('../models/campground');
 const { cloudinary} = require('../cloudinary')
+const maptilerClient = require("@maptiler/client");
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
 
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -20,21 +22,24 @@ module.exports.renderNewForm = (req, res) => {
 //     res.redirect(`/campgrounds/${campground._id}`)
 // }
 module.exports.createCampground = async (req, res, next) => {
+    const geoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 });
     const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.features[0].geometry;
+    res.send(campground.geometry)
     
-    // Map the uploaded files to get URLs and filenames
-    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    // // Map the uploaded files to get URLs and filenames
+    // campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
 
-    // Console log the file paths (Cloudinary URLs)
-    req.files.forEach(file => {
-        console.log('Uploaded Image URL:', file.path);
-        console.log('Uploaded Image file:', file.filename);
-    });
+    // // Console log the file paths (Cloudinary URLs)
+    // req.files.forEach(file => {
+    //     console.log('Uploaded Image URL:', file.path);
+    //     console.log('Uploaded Image file:', file.filename);
+    // });
 
-    campground.author = req.user._id;
-    await campground.save();
-    req.flash('success', 'Successfully made a new campground!');
-    res.redirect(`/campgrounds/${campground._id}`);
+    // campground.author = req.user._id;
+    // await campground.save();
+    // req.flash('success', 'Successfully made a new campground!');
+    // res.redirect(`/campgrounds/${campground._id}`);
 };
 
 module.exports.showCampground = async (req, res) => {
